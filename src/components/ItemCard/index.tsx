@@ -39,28 +39,27 @@ export default function ItemCard({ product, ...props }: Props) {
 
   function handleBuySubmit() {
     if(!selectedOptions.length) {
-      toast(`Selecione os campos vazios!`);
+      toast.error(`Selecione os campos vazios!`);
       setFieldErrors(product.fields?.map(field => field.name) || []);
       return;
     }
+    let error = false;
     product.fields?.forEach(field => {
       const selected = selectedOptions.find((op) => op.field === field.name);
       if (!selected) {
-        toast(`Selecione o campo ${field.label}`);
+        toast.error(`Selecione o campo ${field.label}`);
         setFieldErrors((prev) => [...prev, field.name]);
+        error = true;
         return;
       }
       if (!selected.value) {
-        toast(`Selecione o campo ${field.label}`);
+        toast.error(`Selecione o campo ${field.label}`);
         setFieldErrors((prev) => [...prev, field.name]);
+        error = true;
         return;
       }
-      // if (!field.value) {
-      //   toast(`Selecione o campo ${field.field}`);
-      //   setFieldErrors([field.field]);
-      //   return;
-      // }
     })
+    if (error) return;
     props.onBuySubmit({
       ...product,
       details: product.fields?.map((field) => ({
@@ -72,12 +71,15 @@ export default function ItemCard({ product, ...props }: Props) {
 
   if (!product.fields) return;
   return (
-    <div className="flex gap-[32px]">
+    <div className="flex gap-[32px] mb-8 max-w-[900px]">
       <div className="w-[40%] max-w-[600px]">
         <Gallery images={product.imgs} />
       </div>
       <div className="flex-1 flex flex-col gap-5">
         <div className="flex flex-col gap-1">
+          <h1 className="text-2xl">
+            {product.title}
+          </h1>
           <h1 className="text-2xl font-bold">
             R${" "}
             {product.price.toLocaleString("pt-BR", {

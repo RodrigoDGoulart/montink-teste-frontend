@@ -7,7 +7,10 @@ import { Toaster } from 'sonner'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Toaster position='bottom-right' right-colors />
+    <Toaster 
+      position='top-right' 
+      richColors
+    />
     <div className='flex flex-col h-screen'>
       <Header />
       <div className='flex-1'>

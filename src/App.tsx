@@ -31,7 +31,7 @@ function App() {
   }, []);
 
   return (
-    <main className="m-auto mt-[36px] w-[75%] m-4">
+    <main className="m-auto mt-[36px] w-[75%] flex flex-col items-center">
       {(product && !loading) && (
         <ItemCard
           product={product}
