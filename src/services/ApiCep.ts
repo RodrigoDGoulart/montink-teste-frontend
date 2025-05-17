@@ -1,15 +1,16 @@
+import axios from "axios";
 import type { Address } from "../@types/entities";
 
 class ApiCep {
   private static readonly BASE_URL = "https://viacep.com.br/ws/";
 
   public async getAddress(cep: string): Promise<Address> {
-    const response = await fetch(`${ApiCep.BASE_URL}${cep}/json/`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch address");
+    try {
+      const response = await axios.get<Address>(`${ApiCep.BASE_URL}${cep}/json/`);
+      return response.data;
+    } catch(err) {
+      throw new Error("Erro ao buscar o CEP: " + err);
     }
-    const address: Address = await response.json();
-    return address;
   }
 }
 
