@@ -2,20 +2,20 @@ import { Button, MenuItem, Select } from "@mui/material";
 import Gallery from "../Gallery";
 import Label from "../Label";
 import ColorSelector from "../ColorSelector";
-import type { Product } from "../../@types/entities";
-import { useState } from "react";
+import type { Product, ProductDetails } from "../../@types/entities";
+import { useEffect, useState } from "react";
 import CepField from "../CepField";
 import { toast } from "sonner";
+import Storage from "../../services/Storage";
 
 interface Props {
   product: Product;
   onBuySubmit: (product: Product) => void;
+  onSelectOption: (selectedOptions: ProductDetails[]) => void;
 }
 
 export default function ItemCard({ product, ...props }: Props) {
-  const [selectedOptions, setSelectedOptions] = useState<
-    { field: string; value: string }[]
-  >([]);
+  const [selectedOptions, setSelectedOptions] = useState<ProductDetails[]>(product.details || []);
   const [fieldErrors, setFieldErrors] = useState<string[]>([]);
 
   function handleOptionSelection(field: string, value: string) {
@@ -25,11 +25,13 @@ export default function ItemCard({ product, ...props }: Props) {
 
     const selected = selectedOptions.find((op) => op.field === field);
     if (selected) {
-      setSelectedOptions((prev) =>
-        prev.map((op) => (op.field === field ? { ...op, value } : op))
-      );
+      const options = selectedOptions.map((op) => op.field === field ? { ...op, value } : op)
+      props.onSelectOption(options);
+      setSelectedOptions(options);
     } else {
-      setSelectedOptions((prev) => [...prev, { field, value }]);
+      const options = [...selectedOptions, {field, value}];
+      props.onSelectOption(options);
+      setSelectedOptions(options);
     }
   }
 
@@ -38,13 +40,13 @@ export default function ItemCard({ product, ...props }: Props) {
   }
 
   function handleBuySubmit() {
-    if(!selectedOptions.length) {
+    if (!selectedOptions.length) {
       toast.error(`Selecione os campos vazios!`);
-      setFieldErrors(product.fields?.map(field => field.name) || []);
+      setFieldErrors(product.fields?.map((field) => field.name) || []);
       return;
     }
     let error = false;
-    product.fields?.forEach(field => {
+    product.fields?.forEach((field) => {
       const selected = selectedOptions.find((op) => op.field === field.name);
       if (!selected) {
         toast.error(`Selecione o campo ${field.label}`);
@@ -58,7 +60,7 @@ export default function ItemCard({ product, ...props }: Props) {
         error = true;
         return;
       }
-    })
+    });
     if (error) return;
     props.onBuySubmit({
       ...product,
@@ -69,6 +71,14 @@ export default function ItemCard({ product, ...props }: Props) {
     });
   }
 
+  useEffect(() => {
+    const storedProduct = Storage.get();
+    console.log({storedProduct})
+    if (storedProduct) {
+      setSelectedOptions(storedProduct.details || []);
+    }
+  }, []);
+
   if (!product.fields) return;
   return (
     <div className="flex max-md:flex-col gap-[32px] mb-8 max-w-[900px]">
@@ -77,9 +87,7 @@ export default function ItemCard({ product, ...props }: Props) {
       </div>
       <div className="flex-1 flex flex-col gap-5">
         <div className="flex flex-col gap-1">
-          <h1 className="text-2xl">
-            {product.title}
-          </h1>
+          <h1 className="text-2xl">{product.title}</h1>
           <h1 className="text-2xl font-bold">
             R${" "}
             {product.price.toLocaleString("pt-BR", {
@@ -94,7 +102,11 @@ export default function ItemCard({ product, ...props }: Props) {
           {product.fields
             .filter((field) => field.type === "color")
             .map((field) => (
-              <Label key={field.name} label={field.label} error={fieldErrors.includes(field.name)}>
+              <Label
+                key={field.name}
+                label={field.label}
+                error={fieldErrors.includes(field.name)}
+              >
                 <div className="flex gap-2">
                   {field.options.map((option) => (
                     <ColorSelector
@@ -119,7 +131,11 @@ export default function ItemCard({ product, ...props }: Props) {
           {product.fields
             .filter((field) => field.type !== "color")
             .map((field) => (
-              <Label key={field.name} label={field.label} error={fieldErrors.includes(field.name)}>
+              <Label
+                key={field.name}
+                label={field.label}
+                error={fieldErrors.includes(field.name)}
+              >
                 <Select
                   error={fieldErrors.includes(field.name)}
                   value={getFieldValue(field.name) || ""}
@@ -136,7 +152,12 @@ export default function ItemCard({ product, ...props }: Props) {
             ))}
         </div>
         <div className="w-full mb-1">
-          <Button onClick={handleBuySubmit} variant="contained" color="success" className="w-full h-[48px]">
+          <Button
+            onClick={handleBuySubmit}
+            variant="contained"
+            color="success"
+            className="w-full h-[48px]"
+          >
             Comprar
           </Button>
         </div>
