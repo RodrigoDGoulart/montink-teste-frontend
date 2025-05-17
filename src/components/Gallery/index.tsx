@@ -10,8 +10,8 @@ export default function Gallery({images}: Props) {
   const [selectedImgIndex, setSelectedImgIndex] = useState<number>(0);
 
   return(
-    <div className="flex flex-col gap-[12px] w-[300px]">
-      <div className="relative w-[300px] h-[300px]">
+    <div className="flex flex-col gap-[12px] w-full">
+      <div className="relative w-full h-[300px]">
         <img src={images[selectedImgIndex]} className="object-cover object-center w-full h-full" />
         <button 
           className="absolute top-1/2 left-[12px] bg-black/20 rounded-full cursor-pointer" 
