@@ -4,6 +4,7 @@ import Label from "../Label";
 import ColorSelector from "../ColorSelector";
 import type { Product } from "../../@types/entities";
 import { useState } from "react";
+import CepField from "../CepField";
 
 interface Props {
   product: Product;
@@ -102,10 +103,14 @@ export default function ItemCard({ product, ...props }: Props) {
               </Label>
             ))}
         </div>
-        <div className="flex-1"></div>
-        <Button onClick={handleBuySubmit} variant="contained" color="success" className="w-full h-[48px]">
-          Comprar
-        </Button>
+        <div className="w-full mb-1">
+          <Button onClick={handleBuySubmit} variant="contained" color="success" className="w-full h-[48px]">
+            Comprar
+          </Button>
+        </div>
+        <div>
+          <CepField />
+        </div>
       </div>
     </div>
   );
