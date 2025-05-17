@@ -71,8 +71,8 @@ export default function ItemCard({ product, ...props }: Props) {
 
   if (!product.fields) return;
   return (
-    <div className="flex gap-[32px] mb-8 max-w-[900px]">
-      <div className="w-[40%] max-w-[600px]">
+    <div className="flex max-md:flex-col gap-[32px] mb-8 max-w-[900px]">
+      <div className="md:w-[40%] md:max-w-[600px]">
         <Gallery images={product.imgs} />
       </div>
       <div className="flex-1 flex flex-col gap-5">
