@@ -14,18 +14,18 @@ export default function Gallery({images}: Props) {
       <div className="relative w-full h-[300px]">
         <img src={images[selectedImgIndex]} className="object-cover object-center w-full h-full" />
         <button 
-          className="absolute top-1/2 left-[12px] bg-black/20 rounded-full cursor-pointer" 
+          className="absolute top-1/2 left-[12px] bg-white rounded-full cursor-pointer" 
           onClick={() => setSelectedImgIndex(prev => prev-1)} 
           disabled={selectedImgIndex === 0}
         >
-          <ChevronLeft size={36} color={selectedImgIndex === 0 ? "gray" : "white"} />
+          <ChevronLeft size={36} color={selectedImgIndex === 0 ? "#d8d8d8" : "black"} />
         </button>
         <button 
-          className="absolute top-1/2 right-[12px] bg-black/20 rounded-full cursor-pointer" 
+          className="absolute top-1/2 right-[12px] bg-white rounded-full cursor-pointer" 
           onClick={() => setSelectedImgIndex(prev => prev+1)} 
           disabled={selectedImgIndex === images.slice(0, 6).length - 1}
         >
-          <ChevronRight size={36} color={selectedImgIndex === images.slice(0, 6).length - 1 ? "gray" : "white"} />
+          <ChevronRight size={36} color={selectedImgIndex === images.slice(0, 6).length - 1 ? "#d8d8d8" : "black"} />
         </button>
       </div>
       <div className="flex gap-[6px] overflow-hidden">
